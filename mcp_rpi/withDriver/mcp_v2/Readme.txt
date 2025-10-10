@@ -1,0 +1,1 @@
+Note:In this file we used lan9252 kernel driver and Qt timer to update UI.

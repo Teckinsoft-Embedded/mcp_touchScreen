@@ -1,0 +1,57 @@
+{
+  "en": {
+    "autoButton": "AUTO",
+    "jogButton": "JOG",
+    "zLockButton": "Z-AXIS",
+    "offsetButton": "OFFSETS",
+    "prcEndButton": "PIERCING",
+    "retForButton": "RETRACE",
+    "dryRunButton": "DRY RUN",
+    "retRevButton": "RETRACE",
+    "cycleStartButton": "START",
+    "cycleStopButton": "STOP",
+
+    "xButton": "X",
+    "yButton": "Y",
+    "zButton": "Z",
+    "plusButton": "+",
+    "zeroButton": "ZERO",
+    "minusButton": "-",
+    "cleanButton":"CLEAN",
+
+    "servoEnableButton": "SERVO",
+    "almOvrButton": "OVERRIDE",
+    "almRstButton": "RESET",
+    "laserOnButton": "ON",
+    "laserReadyLed": "READY",
+    "resoLable": "RESONATOR"
+  },
+
+  "ja": {
+    "autoButton": "自動",
+    "jogButton": "ジョグ",
+    "zLockButton": "Z軸",
+    "offsetButton": "オフセット",
+    "prcEndButton": "ピアスエンド",
+    "retForButton": "リトレース先",
+    "dryRunButton": "空運転",
+    "retRevButton": "リトレース戻",
+    "cycleStartButton": "スタート",
+    "cycleStopButton": "ストップ",
+
+    "xButton": "X",
+    "yButton": "Y",
+    "zButton": "Z",
+    "plusButton": "+",
+    "zeroButton": "ゼロ",
+    "minusButton": "-",
+    "cleanButton":"CLEAN",
+
+    "servoEnableButton": "サーボ",
+    "almOvrButton": "アラーム解除",
+    "almRstButton": "リセット",
+    "laserOnButton": "ON",
+    "laserReadyLed":"READY",
+    "resoLable": "発振器"
+  }
+}

@@ -1,0 +1,16 @@
+[Unit]
+Description=Start My Graphical Application
+After=graphical.target
+Requires=display-manager.service
+
+[Service]
+User=lab
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStart=/usr/bin/python3 /home/lab/mcp_v4/main.py
+WorkingDirectory=/home/lab/mcp_v4/
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target
