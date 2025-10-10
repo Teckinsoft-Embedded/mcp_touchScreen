@@ -1,0 +1,33 @@
+
+[Unit]
+Description=Start My New Application (VirtualEnv)
+After=graphical.target
+Wants=graphical.target
+
+[Service]
+User=raspberrypi
+WorkingDirectory=/home/raspberrypi/mcp_v2
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStartPre=/bin/sleep 5
+ExecStart=/home/raspberrypi/run_mcp.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target
+
+
+#!/bin/bash
+export WAYLAND_DISPLAY=wayland-0
+source /home/raspberrypi/venv/bin/activate
+python3 /home/raspberrypi/mcp_v2/main.py 
+
+
+
+sudo nano /etc/systemd/system/mcp.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable mcp.service
+sudo systemctl restart mcp.service
+systemctl status mcp.service
