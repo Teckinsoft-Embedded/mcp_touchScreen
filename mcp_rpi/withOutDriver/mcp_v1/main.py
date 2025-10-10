@@ -54,7 +54,6 @@ class EtherCATThread(QThread):
         self.etc_interface = EtherCATInterface()
         self.etc_init_ok = False
         self.shared_lock = threading.Lock()  # Lock for thread-safe updates
-        self.shared_value = 0 
         self.cpu_core = cpu_core  # Assign CPU core for affinity
         self.gpio_ctrl = GPIOControl()
 
