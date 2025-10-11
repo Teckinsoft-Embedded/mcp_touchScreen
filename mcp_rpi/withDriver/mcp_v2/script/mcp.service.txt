@@ -31,3 +31,15 @@ sudo systemctl daemon-reload
 sudo systemctl enable mcp.service
 sudo systemctl restart mcp.service
 systemctl status mcp.service
+
+#installing  RPI.Gpio Inside virtual Environment.
+pip install RPi.GPIO
+
+#for permisson issues
+sudo nano /etc/udev/rules.d/90-spi.rules
+
+SUBSYSTEM=="spi", KERNEL=="spi0.0", RUN+="/bin/chmod 0666 /sys/bus/spi/devices/spi0.0/process_data_in"
+
+#to update changes
+sudo udevadm control --reload-rules
+sudo udevadm trigger
