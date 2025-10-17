@@ -367,12 +367,6 @@ static uint8_t etc_scan_nb(struct lan9252_data *dev)
 
     dev->last_status = Status;
     
-    /* Print process data to dmesg */
-    printk(KERN_INFO "LAN9252: Status: 0x%02x, Op: %d, WD: %d, "
-           "Out: 0x%08x 0x%08x, In: 0x%08x 0x%08x\n",
-           Status, dev->operational, dev->watchdog_active,
-           dev->buffer_out.LANLong[0], dev->buffer_out.LANLong[1],
-           dev->buffer_in.LANLong[0], dev->buffer_in.LANLong[1]);
 
     return Status;
 }
