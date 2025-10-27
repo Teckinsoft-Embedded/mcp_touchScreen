@@ -40,6 +40,10 @@ CLEAN = 1 << 21
 LASER_ON = 1 << 22
 LASER_READY= 1<< 23
 
+PANEL_UP = 1 << 33
+PANEL_DOWN = 1 << 34
+NOZZLE_CHANGE = 1 << 35
+
 INTERVAL = 50
 
 
@@ -578,27 +582,32 @@ class MainWindow(QMainWindow):
     def init_buttons(self):
         self.home1.ui.laserReadyLed.setEnabled(False)
         self.home2.ui.laserReadyLed.setEnabled(False)
-        self.set_autoMode_buttons(False)
+        # self.set_autoMode_buttons(False)
         # Navigation
         self.home1.ui.jogButton.pressed.connect(
-            lambda: (self.handle_button_pressed(JOG))
+            lambda: (self.stacked_central.setCurrentWidget(self.home2),
+                    self.handle_button_pressed(JOG),
+                    )
         )
-        #self.stacked_central.setCurrentWidget(self.home2)
-
+        # self.set_jogMode_buttons(False)
         self.home1.ui.autoButton.pressed.connect(
-            lambda: (self.handle_button_pressed(AUTO))
+            lambda: (self.stacked_central.setCurrentWidget(self.home1),
+                    self.handle_button_pressed(AUTO)
+                    )
+                    # self.set_autoMode_buttons(False)
         )
-        # self.stacked_central.setCurrentWidget(self.home1),
-
         self.home2.ui.jogButton.pressed.connect(
-            lambda: (self.handle_button_pressed(JOG))
+            lambda: (self.stacked_central.setCurrentWidget(self.home2),
+                    self.handle_button_pressed(JOG)
+                    # self.set_jogMode_buttons(False)
+                   )
         )
-        #self.stacked_central.setCurrentWidget(self.home2),
         self.home2.ui.autoButton.pressed.connect(
-            lambda: (self.handle_button_pressed(AUTO))
-                    
+            lambda: (self.stacked_central.setCurrentWidget(self.home1),
+                    self.handle_button_pressed(AUTO)
+                    # self.set_autoMode_buttons(False)
+                    )
         )
-        #self.stacked_central.setCurrentWidget(self.home1),
 
         # Page-I pressed
         self.home1.ui.zLockButton.pressed.connect(
@@ -640,6 +649,9 @@ class MainWindow(QMainWindow):
             lambda: self.handle_button_pressed(MINUS)
         )
         self.home2.ui.cleanButton.pressed.connect(lambda: self.handle_button_pressed(CLEAN))
+        self.home2.ui.nozzleBoxButton.pressed.connect(
+            lambda: self.handle_button_pressed(NOZZLE_CHANGE)
+        )
 
         # Common pressed
         self.home1.ui.servoEnableButton.pressed.connect(
@@ -655,6 +667,13 @@ class MainWindow(QMainWindow):
             lambda checked: self.on_laserOnButton_toggled(checked)
         )
         self.home1.ui.settingButton.clicked.connect(self.open_password_dialog)
+        self.home1.ui.panelDownButton.pressed.connect(
+            lambda: self.handle_button_pressed(PANEL_DOWN)
+        )
+        self.home1.ui.panelUpButton.pressed.connect(
+            lambda: self.handle_button_pressed(PANEL_UP)
+        )
+        
 
         self.home2.ui.settingButton.clicked.connect(self.open_password_dialog)
         self.home2.ui.servoEnableButton.pressed.connect(
@@ -669,12 +688,13 @@ class MainWindow(QMainWindow):
         self.home2.ui.laserOnButton.toggled.connect(
             lambda checked: self.on_laserOnButton_toggled(checked)
         )
-        self.home1.ui.autoButton.released.connect(lambda: self.handle_button_released(AUTO))
-        self.home1.ui.jogButton.released.connect(lambda: self.handle_button_released(JOG))
-        self.home2.ui.autoButton.released.connect(lambda: self.handle_button_released(AUTO))
-        self.home2.ui.jogButton.released.connect(lambda: self.handle_button_released(JOG))
-
-
+        self.home2.ui.panelDownButton.pressed.connect(
+            lambda: self.handle_button_pressed(PANEL_DOWN)
+        )
+        self.home2.ui.panelUpButton.pressed.connect(
+            lambda: self.handle_button_pressed(PANEL_UP)
+        )
+       
         # Page-I released
         self.home1.ui.zLockButton.released.connect(
             lambda: self.handle_button_released(Z_LOCK)
@@ -715,6 +735,9 @@ class MainWindow(QMainWindow):
             lambda: self.handle_button_released(MINUS)
         )
         self.home2.ui.cleanButton.released.connect(lambda: self.handle_button_released(CLEAN))
+        self.home2.ui.nozzleBoxButton.released.connect(
+            lambda: self.handle_button_released(NOZZLE_CHANGE)
+        )
 
         # Common released
         self.home1.ui.servoEnableButton.released.connect(
@@ -736,18 +759,35 @@ class MainWindow(QMainWindow):
         self.home2.ui.almRstButton.released.connect(
             lambda: self.handle_button_released(ALM_RST)
         )
+        self.home1.ui.panelDownButton.released.connect(
+            lambda: self.handle_button_released(PANEL_DOWN)
+        )
+        self.home1.ui.panelUpButton.released.connect(
+            lambda: self.handle_button_released(PANEL_UP)
+        )
+        self.home2.ui.panelDownButton.released.connect(
+            lambda: self.handle_button_released(PANEL_DOWN)
+        )
+        self.home2.ui.panelUpButton.released.connect(
+            lambda: self.handle_button_released(PANEL_UP)
+        )
+
+
+
+        self.home1.ui.autoButton.released.connect(lambda: self.handle_button_released(AUTO))
+        self.home1.ui.jogButton.released.connect(lambda: self.handle_button_released(JOG))
+        self.home2.ui.autoButton.released.connect(lambda: self.handle_button_released(AUTO))
+        self.home2.ui.jogButton.released.connect(lambda: self.handle_button_released(JOG))
 
     def update_button_states(self, EtcInValue):
-
-        if EtcInValue & JOG:
-            self.set_jogMode_buttons(True)
-            self.set_autoMode_buttons(True)
-            self.stacked_central.setCurrentWidget(self.home2)
-        elif EtcInValue & AUTO:
-            self.set_autoMode_buttons(True)
-            self.set_jogMode_buttons(True)
+        if EtcInValue & AUTO:
+            # self.set_autoMode_buttons(True)
+            # self.set_jogMode_buttons(True)
             self.stacked_central.setCurrentWidget(self.home1)
-        
+        elif EtcInValue & JOG:
+            # self.set_jogMode_buttons(True)
+            # self.set_autoMode_buttons(True)
+            self.stacked_central.setCurrentWidget(self.home2)
         #Page-I Buttons
         if EtcInValue & CYCLE_START:
             self.home1.ui.cycleStartButton.setChecked(True)
@@ -837,7 +877,23 @@ class MainWindow(QMainWindow):
         else:
             self.home1.ui.almRstButton.setChecked(False)
             self.home2.ui.almRstButton.setChecked(False)
-        
+        if EtcInValue & PANEL_DOWN:
+            self.home1.ui.panelDownButton.setChecked(True)
+            self.home2.ui.panelDownButton.setChecked(True)
+        else:
+            self.home1.ui.panelDownButton.setChecked(False)
+            self.home2.ui.panelDownButton.setChecked(False)
+        if EtcInValue & PANEL_UP:
+            self.home1.ui.panelUpButton.setChecked(True)
+            self.home2.ui.panelUpButton.setChecked(True)
+        else:
+            self.home1.ui.panelUpButton.setChecked(False)
+            self.home2.ui.panelUpButton.setChecked(False)
+        if EtcInValue & NOZZLE_CHANGE:
+            self.home2.ui.nozzleBoxButton.setChecked(True)
+        else:
+            self.home2.ui.nozzleBoxButton.setChecked(False)
+
 
 #------------------------Functions for Button Events------------------------#
     def run_periodic_tasks(self):
@@ -868,19 +924,27 @@ class MainWindow(QMainWindow):
             self.buttonStatus &= ~LASER_ON
             self.home1.ui.laserOnButton.setChecked(False)
             self.home2.ui.laserOnButton.setChecked(False)
-        self.write_process_data(self.buttonStatus)
+        # self.write_process_data(self.buttonStatus)
+    
 
     def write_process_data(self, value, path="/sys/bus/spi/devices/spi0.0/process_data_in"):
+        values = [0, 0]
+        values[0] = value & 0xFFFFFFFF
+        values[1] = (value >> 32 )& 0xFFFFFFFF
         # Create a string with the first value as the input, others as 0x00000000
-        data = f"0x{value:08X} 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000"
+        data = f"0x{values[0]:08X} 0x{values[1]:08X} 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000"
+        print(f"Writing process data: {data}")
         with open(path, "w") as f:
             f.write(data)  # Add newline to ensure proper write
 
     def read_process_data_first(self, path="/sys/bus/spi/devices/spi0.0/process_data_out"):
         with open(path, "r") as f:
             content = f.read().strip()
-        first_hex = content.split()[0]         
-        value = int(first_hex, 16)             
+        first_hex = content.split()[0]
+        second_hex = content.split()[1]
+        print(f"Read process data: {content}")
+        print(f"First hex: {first_hex}, Second hex: {second_hex}")
+        value = int(first_hex, 16) | (int(second_hex, 16) << 32)
         return value
     def set_autoMode_buttons(self, state: bool):
         self.home1.ui.zLockButton.setEnabled(state)

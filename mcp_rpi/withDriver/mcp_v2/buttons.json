@@ -1,5 +1,5 @@
 {
-  "en": {
+  "English": {
     "autoButton": "AUTO",
     "jogButton": "JOG",
     "zLockButton": "Z-AXIS",
@@ -17,17 +17,22 @@
     "plusButton": "+",
     "zeroButton": "ZERO",
     "minusButton": "-",
-    "cleanButton":"CLEAN",
+    "cleanButton": "CLEAN",
+    "nozzleBoxButton":"OPEN",
+
 
     "servoEnableButton": "SERVO",
     "almOvrButton": "OVERRIDE",
     "almRstButton": "RESET",
+    "panelUpButton": "UP",
+    "panelDownButton": "DOWN",
     "laserOnButton": "ON",
     "laserReadyLed": "READY",
-    "resoLable": "RESONATOR"
+    "resoLable": "RESONATOR",
+    "panelLable": "PANEL"
   },
 
-  "ja": {
+  "Japanese": {
     "autoButton": "自動",
     "jogButton": "ジョグ",
     "zLockButton": "Z軸",
@@ -45,13 +50,19 @@
     "plusButton": "+",
     "zeroButton": "ゼロ",
     "minusButton": "-",
-    "cleanButton":"CLEAN",
+    "cleanButton": "クリーン",
+    "nozzleBoxButton":"開ける",
+
+
 
     "servoEnableButton": "サーボ",
     "almOvrButton": "アラーム解除",
     "almRstButton": "リセット",
+    "panelUpButton": "パネル上昇",
+    "panelDownButton": "パネル下降",
     "laserOnButton": "ON",
     "laserReadyLed":"READY",
-    "resoLable": "発振器"
+    "resoLable": "発振器",
+    "panelLable": "パネル"
   }
 }
