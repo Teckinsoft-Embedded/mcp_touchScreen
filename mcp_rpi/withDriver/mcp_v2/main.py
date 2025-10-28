@@ -21,14 +21,14 @@ JOG = 1 << 3
 X = 1 << 4
 PLUS = 1 << 5
 Z_LOCK = 1 << 6
-# MDI = 1 << 7
+PANEL_UP = 1 << 7
 Y = 1 << 8
 ZERO = 1 << 9
 DRY_RUN = 1 << 10
 AUTO = 1 << 11
 Z = 1 << 12
 MINUS = 1 << 13
-# NC_REF = 1 << 14
+PANEL_DOWN = 1 << 14
 NC_OFFSET = 1 << 15
 RET_FOR = 1 << 16
 RET_REV = 1 << 17
@@ -36,14 +36,11 @@ PRC_END = 1 << 18
 ALM_OVR = 1 << 19
 ALM_RST = 1 << 20
 CLEAN = 1 << 21
-# LOCK_RST = 1 << 21
 LASER_ON = 1 << 22
 LASER_READY= 1<< 23
-
-PANEL_UP = 1 << 33
-PANEL_DOWN = 1 << 34
-NOZZLE_CHANGE = 1 << 35
-
+#24-31 reserved for GPIOs
+NOZZLE_CHANGE = 1 << 32
+#communication interval in ms
 INTERVAL = 50
 
 
@@ -472,7 +469,7 @@ class MainWindow(QMainWindow):
         # Add to stack
         self.stacked_central.addWidget(self.home1)
         self.stacked_central.addWidget(self.home2)
-        self.stacked_central.setCurrentWidget(self.home1)
+        self.stacked_central.setCurrentWidget(self.home2)
 
         # Disable hover/mouse tracking globally
         for widget in self.findChildren(QWidget):
@@ -582,33 +579,23 @@ class MainWindow(QMainWindow):
     def init_buttons(self):
         self.home1.ui.laserReadyLed.setEnabled(False)
         self.home2.ui.laserReadyLed.setEnabled(False)
-        # self.set_autoMode_buttons(False)
         # Navigation
         self.home1.ui.jogButton.pressed.connect(
-            lambda: (self.stacked_central.setCurrentWidget(self.home2),
-                    self.handle_button_pressed(JOG),
+            lambda: (self.handle_button_pressed(JOG)
+                    # self.stacked_central.setCurrentWidget(self.home2),
                     )
         )
-        # self.set_jogMode_buttons(False)
         self.home1.ui.autoButton.pressed.connect(
-            lambda: (self.stacked_central.setCurrentWidget(self.home1),
-                    self.handle_button_pressed(AUTO)
-                    )
-                    # self.set_autoMode_buttons(False)
+            lambda: (self.handle_button_pressed(AUTO))         
         )
         self.home2.ui.jogButton.pressed.connect(
-            lambda: (self.stacked_central.setCurrentWidget(self.home2),
-                    self.handle_button_pressed(JOG)
-                    # self.set_jogMode_buttons(False)
-                   )
+            lambda: (self.handle_button_pressed(JOG))
         )
         self.home2.ui.autoButton.pressed.connect(
-            lambda: (self.stacked_central.setCurrentWidget(self.home1),
-                    self.handle_button_pressed(AUTO)
-                    # self.set_autoMode_buttons(False)
+            lambda: (self.handle_button_pressed(AUTO)
+                    # self.stacked_central.setCurrentWidget(self.home1),
                     )
         )
-
         # Page-I pressed
         self.home1.ui.zLockButton.pressed.connect(
             lambda: self.handle_button_pressed(Z_LOCK)
@@ -780,14 +767,11 @@ class MainWindow(QMainWindow):
         self.home2.ui.jogButton.released.connect(lambda: self.handle_button_released(JOG))
 
     def update_button_states(self, EtcInValue):
-        if EtcInValue & AUTO:
-            # self.set_autoMode_buttons(True)
-            # self.set_jogMode_buttons(True)
-            self.stacked_central.setCurrentWidget(self.home1)
-        elif EtcInValue & JOG:
-            # self.set_jogMode_buttons(True)
-            # self.set_autoMode_buttons(True)
+
+        if EtcInValue & JOG:
             self.stacked_central.setCurrentWidget(self.home2)
+        elif EtcInValue & AUTO:
+            self.stacked_central.setCurrentWidget(self.home1)
         #Page-I Buttons
         if EtcInValue & CYCLE_START:
             self.home1.ui.cycleStartButton.setChecked(True)
@@ -908,11 +892,9 @@ class MainWindow(QMainWindow):
 
     def handle_button_pressed(self, button_value):
         self.buttonStatus |= button_value
-        # self.write_process_data(self.buttonStatus)
 
     def handle_button_released(self, button_value):
         self.buttonStatus &= ~button_value
-        # self.write_process_data(self.buttonStatus)
 
     def on_laserOnButton_toggled(self, checked):
         if checked:
@@ -924,16 +906,13 @@ class MainWindow(QMainWindow):
             self.buttonStatus &= ~LASER_ON
             self.home1.ui.laserOnButton.setChecked(False)
             self.home2.ui.laserOnButton.setChecked(False)
-        # self.write_process_data(self.buttonStatus)
     
-
     def write_process_data(self, value, path="/sys/bus/spi/devices/spi0.0/process_data_in"):
         values = [0, 0]
         values[0] = value & 0xFFFFFFFF
         values[1] = (value >> 32 )& 0xFFFFFFFF
         # Create a string with the first value as the input, others as 0x00000000
         data = f"0x{values[0]:08X} 0x{values[1]:08X} 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000 0x00000000"
-        print(f"Writing process data: {data}")
         with open(path, "w") as f:
             f.write(data)  # Add newline to ensure proper write
 
@@ -942,28 +921,8 @@ class MainWindow(QMainWindow):
             content = f.read().strip()
         first_hex = content.split()[0]
         second_hex = content.split()[1]
-        print(f"Read process data: {content}")
-        print(f"First hex: {first_hex}, Second hex: {second_hex}")
         value = int(first_hex, 16) | (int(second_hex, 16) << 32)
         return value
-    def set_autoMode_buttons(self, state: bool):
-        self.home1.ui.zLockButton.setEnabled(state)
-        self.home1.ui.offsetButton.setEnabled(state)
-        self.home1.ui.prcEndButton.setEnabled(state)
-        self.home1.ui.retForButton.setEnabled(state)
-        self.home1.ui.dryRunButton.setEnabled(state)
-        self.home1.ui.retRevButton.setEnabled(state)
-        self.home1.ui.cycleStartButton.setEnabled(state)
-        self.home1.ui.cycleStopButton.setEnabled(state)
-
-    def set_jogMode_buttons(self, state: bool):
-        self.home2.ui.xButton.setEnabled(state)
-        self.home2.ui.yButton.setEnabled(state)
-        self.home2.ui.zButton.setEnabled(state)
-        self.home2.ui.plusButton.setEnabled(state)
-        self.home2.ui.zeroButton.setEnabled(state)
-        self.home2.ui.minusButton.setEnabled(state)
-        self.home2.ui.cleanButton.setEnabled(state)
 
 
     def keyPressEvent(self, event):
