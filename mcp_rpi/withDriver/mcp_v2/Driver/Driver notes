@@ -17,7 +17,8 @@ StandardError=journal
  
 # Load the SPI overlay first
 ExecStartPre=/bin/sleep 2
-ExecStart=/usr/bin/dtoverlay -d /boot/firmware/overlays/ spidev_disabler
+#ExecStart=/usr/bin/dtoverlay -d /boot/firmware/overlays/ spidev_disabler
+ExecStart=/usr/bin/dtoverlay -d /home/pi/lan9252 spidev_disabler
 ExecStart=/bin/sleep 1
 ExecStart=/sbin/insmod /home/raspberrypi/lan9252/lan9252_new.ko
  
