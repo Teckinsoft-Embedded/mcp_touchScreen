@@ -18,7 +18,7 @@
     "zeroButton": "ZERO",
     "minusButton": "-",
     "cleanButton": "CLEAN",
-    "nozzleBoxButton":"OPEN",
+    "nozzleBoxButton":"NOZZLE",
 
 
     "servoEnableButton": "SERVO",
@@ -51,7 +51,7 @@
     "zeroButton": "ゼロ",
     "minusButton": "-",
     "cleanButton": "クリーン",
-    "nozzleBoxButton":"開ける",
+    "nozzleBoxButton":"ノズル交換",
 
 
 
