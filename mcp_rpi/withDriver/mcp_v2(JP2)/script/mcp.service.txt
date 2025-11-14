@@ -1,0 +1,93 @@
+#Script for GUI Application
+
+sudo nano  /etc/systemd/system/mcp.service
+ 
+[Unit]
+Description=Start MCP Application (VirtualEnv)
+After=graphical.target
+Wants=graphical.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/mcp_v2
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStartPre=/bin/sleep 5
+ExecStart=/home/pi/mcp_v2/run_mcp.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target
+
+#------------------------------------------------------------------#
+#creat a script to  select disply type and activate environment and start the Application.
+
+sudo nano run_mcp.sh
+
+#!/bin/bash
+export WAYLAND_DISPLAY=wayland-0
+source /home/raspberrypi/venv/bin/activate
+python3 /home/raspberrypi/mcp_v2/main.py 
+
+#--------------------------------------------------------------------#
+#Script for Lan9252-Driver.
+sudo nano  /etc/systemd/system/lan9252-setup.service 
+
+[Unit]
+Description=LAN9252 Setup - Overlay and Driver
+After=dev-mmcblk0p2.device
+Wants=dev-mmcblk0p2.device
+Before=network.target
+DefaultDependencies=no
+ 
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=30
+StandardOutput=journal
+StandardError=journal
+ 
+# Load the SPI overlay first
+ExecStartPre=/bin/sleep 2
+ExecStart=/usr/bin/dtoverlay -d /home/pi/mcp_v2/lan9252 spidev_disabler
+ExecStart=/bin/sleep 1
+ExecStart=/sbin/insmod /home/pi/mcp_v2/lan9252/lan9252_new.ko
+ 
+[Install]
+WantedBy=multi-user.target
+
+#-------------------------------------------------------#
+# TO run Service
+sudo systemctl daemon-reload
+sudo systemctl enable mcp.service
+sudo systemctl start mcp.service
+systemctl status mcp.service
+
+#----------------------------------------------------------#
+#Setting up python Environment
+
+#create python virtual Environment
+python3 -m venv venv
+#install PySide6
+pip install PySide6
+#installing  RPI.Gpio Inside virtual Environment.
+pip install RPi.GPIO
+
+#for permisson issues
+sudo nano /etc/udev/rules.d/90-spi.rules
+
+SUBSYSTEM=="spi", KERNEL=="spi0.0", RUN+="/bin/chmod 0666 /sys/bus/spi/devices/spi0.0/process_data_in"
+
+#to update changes
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+
+#--------------------------------------------------------#
+#Setting up Driver 
+#inside lan9252 Directory 
+ make clean
+ make 
+
+ #TO create dtbo file properly.
+ dtc -@ -I dts -O dtb spidev_disabler.dts -o spidev_disabler.dtb

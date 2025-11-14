@@ -1,0 +1,73 @@
+#to create service for lan9252 overlay and driver
+sudo nano /etc/systemd/system/lan9252-setup.service
+
+[Unit]
+Description=LAN9252 Setup - Overlay and Driver
+After=dev-mmcblk0p2.device
+Wants=dev-mmcblk0p2.device
+Before=network.target
+DefaultDependencies=no
+ 
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=30
+StandardOutput=journal
+StandardError=journal
+ 
+# Load the SPI overlay first
+ExecStartPre=/bin/sleep 2
+#ExecStart=/usr/bin/dtoverlay -d /boot/firmware/overlays/ spidev_disabler
+ExecStart=/usr/bin/dtoverlay -d /home/pi/lan9252 spidev_disabler
+ExecStart=/bin/sleep 1
+ExecStart=/sbin/insmod /home/raspberrypi/lan9252/lan9252_new.ko
+ 
+[Install]
+WantedBy=multi-user.target
+
+##----------------------------Optinal-the last----------
+$ sudo nano /usr/local/bin/load_lan9252.sh
+
+#!/bin/bash
+# Load LAN9252 driver automatically at boot
+ 
+BASE_DIR="/home/raspberrypi/mcp_v2/Driver/lan9252"
+DTS_PATH="$BASE_DIR/spidev_disabler.dts"
+DTBO_PATH="$BASE_DIR/spidev_disabler.dtbo"
+KO_PATH="$BASE_DIR/lan9252_new.ko"
+ 
+echo "[LAN9252] Starting module setup..."
+ 
+# Compile the overlay if not already compiled
+if [ ! -f "$DTBO_PATH" ]; then
+    echo "[LAN9252] Compiling overlay..."
+    dtc "$DTS_PATH" -O dtb -o "$DTBO_PATH"
+fi
+ 
+# Apply the overlay (disable spidev)
+echo "[LAN9252] Applying device tree overlay..."
+dtoverlay -d "$BASE_DIR" spidev_disabler
+ 
+# Load the kernel module
+echo "[LAN9252] Inserting LAN9252 module..."
+insmod "$KO_PATH"
+ 
+echo "[LAN9252] Module loaded successfully."
+
+#to create service for lan9252 driver
+$ sudo nano /etc/systemd/system/lan9252.service
+
+[Unit]
+Description=Load LAN9252 Driver and Disable spidev
+After=spi.target sysinit.target local-fs.target
+Wants=spi.target
+ 
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/load_lan9252.sh
+RemainAfterExit=yes
+StandardOutput=journal
+StandardError=journal
+ 
+[Install]
+WantedBy=multi-user.target

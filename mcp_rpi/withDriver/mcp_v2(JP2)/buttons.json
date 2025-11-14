@@ -1,0 +1,68 @@
+{
+  "English": {
+    "autoButton": "AUTO",
+    "jogButton": "JOG",
+    "zLockButton": "Z-AXIS",
+    "offsetButton": "OFFSETS",
+    "prcEndButton": "PIERCING",
+    "retForButton": "RETRACE",
+    "dryRunButton": "DRY RUN",
+    "retRevButton": "RETRACE",
+    "cycleStartButton": "START",
+    "cycleStopButton": "STOP",
+
+    "xButton": "X",
+    "yButton": "Y",
+    "zButton": "Z",
+    "plusButton": "+",
+    "zeroButton": "ZERO",
+    "minusButton": "-",
+    "doorUnlockButton": "DOOR",
+    "nozzleChangeButton":"NOZZLE",
+
+
+    "servoEnableButton": "SERVO",
+    "almOvrButton": "OVERRIDE",
+    "almRstButton": "RESET",
+    "panelUpButton": "UP",
+    "panelDownButton": "DOWN",
+    "laserOnButton": "ON",
+    "laserReadyLed": "READY",
+    "resoLable": "RESONATOR",
+    "panelLable": "PANEL"
+  },
+
+  "Japanese": {
+    "autoButton": "自動",
+    "jogButton": "ジョグ",
+    "zLockButton": "Z軸",
+    "offsetButton": "オフセット",
+    "prcEndButton": "ピアスエンド",
+    "retForButton": "リトレース先",
+    "dryRunButton": "空運転",
+    "retRevButton": "リトレース戻",
+    "cycleStartButton": "スタート",
+    "cycleStopButton": "ストップ",
+
+    "xButton": "X",
+    "yButton": "Y",
+    "zButton": "Z",
+    "plusButton": "+",
+    "zeroButton": "ゼロ",
+    "minusButton": "-",
+    "doorUnlockButton": "ドア",
+    "nozzleChangeButton":"ノズル交換",
+
+
+
+    "servoEnableButton": "サーボ",
+    "almOvrButton": "アラーム解除",
+    "almRstButton": "リセット",
+    "panelUpButton": "パネル上昇",
+    "panelDownButton": "パネル下降",
+    "laserOnButton": "ON",
+    "laserReadyLed":"READY",
+    "resoLable": "発振器",
+    "panelLable": "パネル"
+  }
+}

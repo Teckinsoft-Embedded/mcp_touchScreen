@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(180, 100, 100)">
+    <g fill="none" stroke="none 	" stroke-width="3">
+      <path d="m0 16v-16h16"/>
+      <path d="m200 16v-16h-16"/>
+      <path d="m0 184v16h16"/>
+      <path d="m200 184v16h-16"/>
+    </g>
+    <path d="m100 11.865-88.135 88.135h47.457v81.355h81.355v-81.355h47.457z" fill="none" stroke="#fff" stroke-width="5"/>
+  </g>
+</svg>
+
